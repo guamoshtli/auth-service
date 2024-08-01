@@ -1,27 +1,28 @@
-const { Model, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Role = require('./role');
 
-class UserRole extends Model {}
-
-UserRole.init({
+const UserRole = sequelize.define('UserRole', {
   userId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
-      model: 'Users',
-      key: 'id',
-    },
+      model: 'User',
+      key: 'id'
+    }
   },
   roleId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
-      model: 'Roles',
-      key: 'id',
-    },
-  },
+      model: 'Role',
+      key: 'id'
+    }
+  }
 }, {
-  sequelize,
-  modelName: 'UserRole',
-  timestamps: true,
+  timestamps: true
 });
+
+UserRole.belongsTo(Role);
 
 module.exports = UserRole;

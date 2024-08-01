@@ -17,6 +17,8 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const roleRoutes = require('./routes/role');
 const companyRoutes = require('./routes/company');
+const userRoleRoutes = require('./routes/userRole');
+const userCompanyRoutes = require('./routes/userCompany');
 
 // Conexión a la base de datos
 sequelize.authenticate()
@@ -37,6 +39,8 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/companies', companyRoutes);
+app.use('/userRoles', userRoleRoutes);
+app.use('/userCompanies', userCompanyRoutes);
 
 // Manejo de errores para rutas no encontradas
 app.use((req, res, next) => {
