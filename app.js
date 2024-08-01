@@ -1,18 +1,30 @@
+/**
+ * Archivo principal de la aplicación.
+ */
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const sequelize = require('./config/database');
 
-// Cargar variables de entorno desde .env
+/**
+ * Cargar variables de entorno desde el archivo .env.
+ */
 dotenv.config();
 
-// Inicializar la aplicación Express
+/**
+ * Inicializar la aplicación Express.
+ */
 const app = express();
 
-// Middleware para analizar cuerpos de solicitudes JSON
+/**
+ * Middleware para analizar cuerpos de solicitudes JSON.
+ */
 app.use(bodyParser.json());
 
-// Importar las rutas
+/**
+ * Importar las rutas de la aplicación.
+ */
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const roleRoutes = require('./routes/role');
@@ -20,7 +32,9 @@ const companyRoutes = require('./routes/company');
 const userRoleRoutes = require('./routes/userRole');
 const userCompanyRoutes = require('./routes/userCompany');
 
-// Conexión a la base de datos
+/**
+ * Conectar a la base de datos y sincronizar los modelos.
+ */
 sequelize.authenticate()
   .then(() => {
     console.log('Conectado a la base de datos');
@@ -34,7 +48,9 @@ sequelize.authenticate()
     console.error('Error al conectar con la base de datos:', err);
   });
 
-// Usar las rutas
+/**
+ * Usar las rutas de la aplicación.
+ */
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/roles', roleRoutes);
@@ -42,13 +58,21 @@ app.use('/companies', companyRoutes);
 app.use('/userRoles', userRoleRoutes);
 app.use('/userCompanies', userCompanyRoutes);
 
-// Manejo de errores para rutas no encontradas
+/**
+ * Manejo de errores para rutas no encontradas.
+ */
 app.use((req, res, next) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
-// Puerto del servidor
+/**
+ * Establecer el puerto del servidor.
+ */
 const PORT = process.env.PORT || 5000;
+
+/**
+ * Iniciar el servidor en el puerto especificado.
+ */
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
