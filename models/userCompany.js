@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Company = require('./company') 
 
 class UserCompany extends Model {}
 
@@ -23,5 +24,7 @@ UserCompany.init({
   modelName: 'UserCompany',
   timestamps: true,
 });
+
+UserCompany.belongsTo(Company);
 
 module.exports = UserCompany;
