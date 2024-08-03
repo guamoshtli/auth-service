@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+
+# Test coverage
+coverage/
+
+# Docker files
+docker-compose.override.yml
+Dockerfile*
+*.dockerignore
+
+# Miscellaneous
+*.tgz
+*.gz
