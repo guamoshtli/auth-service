@@ -5,24 +5,22 @@ const tokenBlacklist = new Set();
 require('dotenv').config();
 const validateUser = require('../services/validationService');
 const { z } = require('zod'); // Importar el servicio de validación
+const  s  = require('../middlewares/sendResponse');
+
 
 // Función de ayuda para crear un token
 const createToken = (user) => {
   return jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
-// Función de ayuda para enviar respuestas
-const sendResponse = (res, status, data) => {
-  res.status(status).json(data);
-};
 
 // Middleware para manejar errores
 const handleError = (error, res) => {
   if (error instanceof z.ZodError) {
-    return sendResponse(res, 400, { error: error.errors });
+    return s.sendResponse(res, 400, { error: error.errors });
   }
   console.error(error);
-  return sendResponse(res, 500, { error: 'Error en el servidor' });
+  return s.sendResponse(res, 500, { error: 'Error en el servidor' });
 };
 
 // Función para registrar un nuevo usuario
@@ -34,7 +32,7 @@ exports.register = async (req, res) => {
       ...validatedData,
       password: hashedPassword,
     });
-    sendResponse(res, 201, newUser);
+    s.sendResponse(res, 201, newUser);
   } catch (error) {
     handleError(error, res);
   }
@@ -46,14 +44,14 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return sendResponse(res, 400, { error: 'Usuario no encontrado' });
+      return s.sendResponse(res, 400, { error: 'Usuario no encontrado' });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return sendResponse(res, 400, { error: 'Contraseña incorrecta' });
+      return s.sendResponse(res, 400, { error: 'Contraseña incorrecta' });
     }
     const token = createToken(user);
-    sendResponse(res, 200, { token });
+    s.sendResponse(res, 200, { token });
   } catch (error) {
     handleError(error, res);
   }
@@ -64,9 +62,9 @@ exports.verify = (req, res) => {
   const { token } = req.body;
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    sendResponse(res, 200, decoded);
+    s.sendResponse(res, 200, decoded);
   } catch (error) {
-    sendResponse(res, 401, { error: 'Token no válido' });
+    s.sendResponse(res, 401, { error: 'Token no válido' });
   }
 };
 
@@ -76,9 +74,9 @@ exports.refresh = (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
     const newToken = createToken(decoded);
-    sendResponse(res, 200, { token: newToken });
+    s.sendResponse(res, 200, { token: newToken });
   } catch (error) {
-    sendResponse(res, 401, { error: 'Token no válido' });
+    s.sendResponse(res, 401, { error: 'Token no válido' });
   }
 };
 
@@ -86,7 +84,7 @@ exports.refresh = (req, res) => {
 exports.logout = (req, res) => {
   const token = req.header('Authorization').replace('Bearer ', '');
   tokenBlacklist.add(token);
-  sendResponse(res, 200, { message: 'Logout successful' });
+  s.sendResponse(res, 200, { message: 'Logout successful' });
 };
 
 // Función para verificar si un token está en la lista negra

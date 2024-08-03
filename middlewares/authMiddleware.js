@@ -5,6 +5,10 @@
 const jwt = require('jsonwebtoken');
 const { isTokenBlacklisted } = require('../controllers/authController');
 require('dotenv').config();
+const  s  = require('./sendResponse');
+
+
+
 
 /**
  * Función para verificar un token de autenticación en una solicitud.
@@ -18,7 +22,7 @@ exports.verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
   if (!token) {
     // Retorna un error si no se proporcionó un token de autorización.
-    return res.status(401).json({ error: 'Acceso denegado' });
+      return s.sendResponse(res, 401, { error: 'Acceso denegado' } )
   }
 
   // Extrae el valor del token de autorización.
@@ -27,7 +31,7 @@ exports.verifyToken = (req, res, next) => {
   // Verifica si el token de autorización está en la lista negra.
   if (isTokenBlacklisted(tokenValue)) {
     // Retorna un error si el token de autorización está en la lista negra.
-    return res.status(401).json({ error: 'Token invalidado' });
+      return s.sendResponse(res, 401, { error: 'Token invalidado' } );
   }
 
   try {
@@ -39,6 +43,8 @@ exports.verifyToken = (req, res, next) => {
     next();
   } catch (error) {
     // Retorna un error si el token de autorización no es válido.
-    res.status(400).json({ error: 'Token no válido' });
+        s.sendResponse(res, 400, { error: 'Token no válido' } )
   }
 };
+
+
