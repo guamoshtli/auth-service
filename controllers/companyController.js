@@ -1,11 +1,12 @@
 const { Company } = require('../models');
+const s = require('../middlewares/sendResponse');
 
 exports.getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.findAll();
-    res.json(companies);
+    s.sendResponse(res, 200, companies);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener empresas' });
+    s.sendResponse(res, 500, { error: 'Error al obtener empresas' });
   }
 };
 
@@ -14,25 +15,25 @@ exports.getCompanyById = async (req, res) => {
   try {
     const company = await Company.findByPk(id);
     if (!company) {
-      return res.status(404).json({ error: 'Empresa no encontrada' });
+      return s.sendResponse(res, 404, { error: 'Empresa no encontrada' });
     }
-    res.json(company);
+    s.sendResponse(res, 200, company);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener empresa' });
+    s.sendResponse(res, 500, { error: 'Error al obtener empresa' });
   }
 };
 
 exports.createCompany = async (req, res) => {
   const { name, address } = req.body;
   if (!name || !address) {
-    return res.status(400).json({ error: 'El nombre y la dirección son requeridos' });
+    return s.sendResponse(res, 400, { error: 'El nombre y la dirección son requeridos' });
   }
 
   try {
     const newCompany = await Company.create({ name, address });
-    res.status(201).json(newCompany);
+    s.sendResponse(res, 201, newCompany);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear empresa' });
+    s.sendResponse(res, 500, { error: 'Error al crear empresa' });
   }
 };
 
@@ -42,14 +43,14 @@ exports.updateCompany = async (req, res) => {
   try {
     const company = await Company.findByPk(id);
     if (!company) {
-      return res.status(404).json({ error: 'Empresa no encontrada' });
+      return s.sendResponse(res, 404, { error: 'Empresa no encontrada' });
     }
     company.name = name || company.name;
     company.address = address || company.address;
     await company.save();
-    res.json(company);
+    s.sendResponse(res, 200, company);
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar empresa' });
+    s.sendResponse(res, 500, { error: 'Error al actualizar empresa' });
   }
 };
 
@@ -58,11 +59,11 @@ exports.deleteCompany = async (req, res) => {
   try {
     const company = await Company.findByPk(id);
     if (!company) {
-      return res.status(404).json({ error: 'Empresa no encontrada' });
+      return s.sendResponse(res, 404, { error: 'Empresa no encontrada' });
     }
     await company.destroy();
-    res.json({ message: 'Empresa eliminada' });
+    s.sendResponse(res, 200, { message: 'Empresa eliminada' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar empresa' });
+    s.sendResponse(res, 500, { error: 'Error al eliminar empresa' });
   }
 };

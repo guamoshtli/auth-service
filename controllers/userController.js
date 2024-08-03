@@ -3,6 +3,7 @@
  */
 
 const { User } = require('../models');
+const  s  = require('../middlewares/sendResponse');
 
 /**
  * Función para obtener todos los usuarios.
@@ -18,7 +19,7 @@ exports.getAllUsers = async (req, res) => {
     res.json(users);
   } catch (error) {
     // Retorna un error si ocurre algo durante la búsqueda de usuarios.
-    res.status(500).json({ error: 'Error al obtener usuarios' });
+    s.sendResponse(res,500, { error: 'Error al obtener usuarios' })
   }
 };
 
@@ -35,13 +36,13 @@ exports.getUserById = async (req, res) => {
     const user = await User.findByPk(id);
     if (!user) {
       // Retorna un error si el usuario no existe.
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+      return s.sendResponse(res,404, { error: 'Usuario no encontrado' })
     }
     // Retorna el usuario encontrado.
     res.json(user);
   } catch (error) {
     // Retorna un error si ocurre algo durante la búsqueda del usuario.
-    res.status(500).json({ error: 'Error al obtener usuario' });
+    s.sendResponse(res, 500, { error: 'Error al obtener usuario' })
   }
 };
 
@@ -59,7 +60,7 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByPk(id);
     if (!user) {
       // Retorna un error si el usuario no existe.
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+     return s.sendResponse(res, 404, { error: 'Usuario no encontrado' })
     }
     // Actualiza los campos del usuario según los valores proporcionados.
     user.username = username || user.username;
@@ -74,7 +75,7 @@ exports.updateUser = async (req, res) => {
     res.json(user);
   } catch (error) {
     // Retorna un error si ocurre algo durante la actualización del usuario.
-    res.status(500).json({ error: 'Error al actualizar usuario' });
+    s.sendResponse(res, 500, { error: 'Error al actualizar usuario' } )
   }
 };
 
@@ -91,7 +92,7 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByPk(id);
     if (!user) {
       // Retorna un error si el usuario no existe.
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+      s.sendResponse(res, 404, { error: 'Usuario no encontrado' })
     }
     // Elimina el usuario de la base de datos.
     await user.destroy();
@@ -99,6 +100,6 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: 'Usuario eliminado' });
   } catch (error) {
     // Retorna un error si ocurre algo durante la eliminación del usuario.
-    res.status(500).json({ error: 'Error al eliminar usuario' });
+    s.sendResponse(res, 500, { error: 'Error al eliminar usuario' })
   }
 };

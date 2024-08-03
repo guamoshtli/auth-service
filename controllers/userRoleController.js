@@ -13,13 +13,10 @@ exports.addUserRole = async (req, res) => {
 
 exports.getUserRoles = async (req, res) => {
   const { userId } = req.params;
-  console.log('Request Params:', req.params); // Log para verificar los parámetros de la solicitud
   try {
     const roles = await UserRole.findAll({ where: { userId }, include: Role });
-    console.log('Roles Encontrados:', roles); // Log para verificar los roles encontrados
     res.status(200).json(roles);
   } catch (error) {
-    console.error('Error al obtener roles del usuario:', error); // Log para verificar errores
     res.status(500).json({ error: 'Error al obtener roles del usuario' });
   }
 };

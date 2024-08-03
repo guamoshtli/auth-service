@@ -1,11 +1,12 @@
 const { Role } = require('../models');
+const s = require('../middlewares/sendResponse');
 
 exports.getAllRoles = async (req, res) => {
   try {
     const roles = await Role.findAll();
-    res.json(roles);
+    s.sendResponse(res, 200, roles);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    s.sendResponse(res, 500, { error: 'Error al obtener roles' });
   }
 };
 
@@ -14,11 +15,11 @@ exports.getRoleById = async (req, res) => {
   try {
     const role = await Role.findByPk(id);
     if (!role) {
-      return res.status(404).json({ error: 'Rol no encontrado' });
+      return s.sendResponse(res, 404, { error: 'Rol no encontrado' });
     }
-    res.json(role);
+    s.sendResponse(res, 200, role);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener rol' });
+    s.sendResponse(res, 500, { error: 'Error al obtener rol' });
   }
 };
 
@@ -26,9 +27,9 @@ exports.createRole = async (req, res) => {
   const { name } = req.body;
   try {
     const newRole = await Role.create({ name });
-    res.status(201).json(newRole);
+    s.sendResponse(res, 201, newRole);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear rol' });
+    s.sendResponse(res, 500, { error: 'Error al crear rol' });
   }
 };
 
@@ -38,13 +39,13 @@ exports.updateRole = async (req, res) => {
   try {
     const role = await Role.findByPk(id);
     if (!role) {
-      return res.status(404).json({ error: 'Rol no encontrado' });
+      return s.sendResponse(res, 404, { error: 'Rol no encontrado' });
     }
     role.name = name || role.name;
     await role.save();
-    res.json(role);
+    s.sendResponse(res, 200, role);
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar rol' });
+    s.sendResponse(res, 500, { error: 'Error al actualizar rol' });
   }
 };
 
@@ -53,11 +54,11 @@ exports.deleteRole = async (req, res) => {
   try {
     const role = await Role.findByPk(id);
     if (!role) {
-      return res.status(404).json({ error: 'Rol no encontrado' });
+      return s.sendResponse(res, 404, { error: 'Rol no encontrado' });
     }
     await role.destroy();
-    res.json({ message: 'Rol eliminado' });
+    s.sendResponse(res, 200, { message: 'Rol eliminado' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar rol' });
+    s.sendResponse(res, 500, { error: 'Error al eliminar rol' });
   }
 };
