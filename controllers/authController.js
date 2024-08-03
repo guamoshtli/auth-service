@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const tokenBlacklist = new Set();
 require('dotenv').config();
+const validateUser  = require('../services/validationService');
+const { z } = require("zod");  // Importar el servicio de validación
 
 /**
  * Función para registrar un nuevo usuario.
@@ -15,16 +17,26 @@ require('dotenv').config();
  * @param {Object} res - Objeto de respuesta.
  */
 exports.register = async (req, res) => {
-  const { username, email, password } = req.body;
   try {
-    // Encripta la contraseña del usuario.
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Crea un nuevo usuario en la base de datos.
-    const newUser = await User.create({ username, email, password: hashedPassword });
-    // Retorna el usuario creado.
+    // Validar los datos de entrada con Zod
+    const validatedData = validateUser(req.body);
+
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
+    // Crear un nuevo usuario
+    const newUser = await User.create({
+      ...validatedData,
+      password: hashedPassword,
+    });
+
     res.status(201).json(newUser);
   } catch (error) {
-    // Retorna un error si ocurre algo durante el registro.
+    if (error instanceof z.ZodError) {
+      // Manejar errores de validación de Zod
+      return res.status(400).json({ error: error.errors });
+    }
+    console.error(error);
     res.status(500).json({ error: 'Error al registrar el usuario' });
   }
 };

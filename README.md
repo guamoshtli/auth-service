@@ -2,6 +2,10 @@
 
 ### Incluye:
 
-* Ruta para hacer login
-* Ruta para hacer logout
-* REST APIS protegidas  para el CRUD de usuario,  roles  y empresas
+* POST /auth/register: Registro de usuarios
+
+* POST /auth/login: Autenticación de usuarios
+
+* POST /auth/logout: Cierre de sesión de usuarios
+
+* GET /auth/token: Obtención de token de acceso
