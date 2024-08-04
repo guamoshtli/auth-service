@@ -51,6 +51,13 @@ router.put('/:id', authMiddleware.verifyToken, userController.updateUser);
 router.delete('/:id', authMiddleware.verifyToken, userController.deleteUser);
 
 /**
+ * Ruta para crear un usuario.
+ * 
+**/
+
+router.post('/',   userController.createUser);
+
+/**
  * Exporta el router de usuarios.
  */
 module.exports = router;

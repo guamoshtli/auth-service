@@ -42,7 +42,10 @@ const userCompanyRoutes = require('./routes/userCompany');
 const swaggerDocument = YAML.load('./services/openapi.yml');   
 
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//Expone  un endpoint para  trabajar con las apis
+if (process.env.NODE_ENV == 'Desarrollo') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
 /**
  * Conectar a la base de datos y sincronizar los modelos.

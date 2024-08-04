@@ -20,6 +20,7 @@ const  s  = require('./sendResponse');
 exports.verifyToken = (req, res, next) => {
   // Obtiene el token de autorización de la solicitud.
   const token = req.header('Authorization');
+  //console.log(token);
   if (!token) {
     // Retorna un error si no se proporcionó un token de autorización.
       return s.sendResponse(res, 401, { error: 'Acceso denegado' } )

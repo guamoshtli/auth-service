@@ -4,6 +4,9 @@
 
 const { User } = require('../models');
 const  s  = require('../middlewares/sendResponse');
+const bcrypt = require('bcryptjs');
+const validateUser = require('../services/validationService');
+const { z } = require('zod'); 
 
 /**
  * Función para obtener todos los usuarios.
@@ -101,5 +104,21 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     // Retorna un error si ocurre algo durante la eliminación del usuario.
     s.sendResponse(res, 500, { error: 'Error al eliminar usuario' })
+  }
+};
+
+// Función para registrar un nuevo usuario
+exports.createUser = async (req, res) => {
+  try {
+    const validatedData = validateUser(req.body);
+    console.log(validatedData)
+    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+    const newUser = await User.create({
+      ...validatedData,
+      password: hashedPassword,
+    });
+    s.sendResponse(res, 201, newUser);
+  } catch (error) {
+    s.sendResponse(res, 500, { error: 'Error al crear usuario' });
   }
 };

@@ -66,14 +66,12 @@ paths:
                   $ref: '#/components/schemas/User'
     post:
       summary: Crea un nuevo usuario
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Register'
       responses:
         '201':
           description: Usuario creado exitosamente
@@ -160,6 +158,117 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /companies:
+    get:
+      summary: Obtiene una lista de todos los compañías
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de compañias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+    post:
+      summary: Crea una nueva compañia
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        '201':
+          description: Compañia creada exitosamente
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /companies/{id}:
+    get:
+      summary: Obtiene una compañía por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la compañia
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Compañia encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '404':
+          description: Compañía no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Actualiza un compañia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la compaia
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        '200':
+          description: Comapñía actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Elimina un compañía
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la compañia
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Compañia eliminado
+        '404':
+          description: Compañía no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+    
 components:
   schemas:
     User:
@@ -198,6 +307,7 @@ components:
           type: string
         code:
           type: integer
+
     Register:
       type: object
       properties:
@@ -210,7 +320,15 @@ components:
           format: password
         confirmPassword:
           type: string
-          format: password  
+          format: password
+
+    Company:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
 
   securitySchemes:
     bearerAuth:
