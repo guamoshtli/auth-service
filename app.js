@@ -6,6 +6,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const sequelize = require('./config/database');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 /**
  * Cargar variables de entorno desde el archivo .env.
@@ -31,6 +33,11 @@ const roleRoutes = require('./routes/role');
 const companyRoutes = require('./routes/company');
 const userRoleRoutes = require('./routes/userRole');
 const userCompanyRoutes = require('./routes/userCompany');
+
+const swaggerDocument = YAML.load('./openapi.yaml');   
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
  * Conectar a la base de datos y sincronizar los modelos.

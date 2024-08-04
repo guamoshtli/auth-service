@@ -1,0 +1,147 @@
+openapi: 3.1.0
+info:
+  title: Mi API de Autenticación
+  version: 1.0.0
+  description: API para gestionar la autenticación de usuarios.
+
+servers:
+  - url: http://localhost:3000/api/auth
+
+paths:
+  /register:
+    post:
+      summary: Registra un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+        '400':
+          description:  Error de validación
+  /login:
+    post:
+      summary: Inicia sesión de un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description:  Token de autenticación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Credenciales inválidas
+  # ... (otras rutas: verify, refresh, logout)
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        paths:
+  /users:
+    get:
+      summary: Obtiene una lista de todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'  
+
+    post:
+      summary:  Crea un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+        '400':
+          description:  Error de validación
+  /users/{id}:
+    get:
+      summary: Obtiene un usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description:  Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
+
+    put:
+      summary: Actualiza un usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:  
+
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuario actualizado   
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+    delete:
+      summary: Elimina  un usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario eliminado
+        '404':
+          description: Usuario no encontrado
+    LoginRequest:
+      type: object
+      properties:
+        # ... (propiedades para el login)
