@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const sequelize = require('./config/database');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+const cors = require('cors');
 
 /**
  * Cargar variables de entorno desde el archivo .env.
@@ -18,6 +19,10 @@ dotenv.config();
  * Inicializar la aplicación Express.
  */
 const app = express();
+
+app.use(cors({
+  origin: ['http://localhost:4200', 'http://localhost:8080', 'http://localhost:3000']
+}));
 
 /**
  * Middleware para analizar cuerpos de solicitudes JSON.
@@ -34,7 +39,7 @@ const companyRoutes = require('./routes/company');
 const userRoleRoutes = require('./routes/userRole');
 const userCompanyRoutes = require('./routes/userCompany');
 
-const swaggerDocument = YAML.load('./openapi.yaml');   
+const swaggerDocument = YAML.load('./services/openapi.yml');   
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

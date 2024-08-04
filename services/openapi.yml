@@ -1,14 +1,11 @@
-openapi: 3.1.0
+openapi: '3.0.3'
 info:
-  title: Mi API de Autenticación
-  version: 1.0.0
-  description: API para gestionar la autenticación de usuarios.
-
+  title: API Title
+  version: '1.0'
 servers:
-  - url: http://localhost:3000/api/auth
-
-paths:
-  /register:
+  - url: http://localhost:3000/
+paths: 
+  /auth/register:
     post:
       summary: Registra un nuevo usuario
       requestBody:
@@ -16,13 +13,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Register'
       responses:
         '201':
           description: Usuario creado exitosamente
         '400':
-          description:  Error de validación
-  /login:
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
     post:
       summary: Inicia sesión de un usuario
       requestBody:
@@ -33,7 +35,7 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description:  Token de autenticación
+          description: Token de autenticación
           content:
             application/json:
               schema:
@@ -43,17 +45,16 @@ paths:
                     type: string
         '401':
           description: Credenciales inválidas
-  # ... (otras rutas: verify, refresh, logout)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        paths:
   /users:
     get:
       summary: Obtiene una lista de todos los usuarios
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Lista de usuarios
@@ -62,10 +63,11 @@ components:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'  
-
+                  $ref: '#/components/schemas/User'
     post:
-      summary:  Crea un nuevo usuario
+      summary: Crea un nuevo usuario
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -76,10 +78,17 @@ components:
         '201':
           description: Usuario creado exitosamente
         '400':
-          description:  Error de validación
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /users/{id}:
     get:
       summary: Obtiene un usuario por ID
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -95,14 +104,15 @@ components:
               schema:
                 $ref: '#/components/schemas/User'
         '404':
-          description:  Usuario no encontrado
+          description: Usuario no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error' 
-
+                $ref: '#/components/schemas/Error'
     put:
       summary: Actualiza un usuario
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -114,21 +124,25 @@ components:
         required: true
         content:
           application/json:
-            schema:  
-
+            schema:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: Usuario actualizado   
-
+          description: Usuario actualizado
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '404':
           description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
-      summary: Elimina  un usuario
+      summary: Elimina un usuario
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -141,7 +155,65 @@ components:
           description: Usuario eliminado
         '404':
           description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+      required:
+        - username
+        - email
+        - password
+
     LoginRequest:
       type: object
       properties:
-        # ... (propiedades para el login)
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+        confirmPassword:
+          type: string
+          format: password  
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
