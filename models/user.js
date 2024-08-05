@@ -5,7 +5,9 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Role = require('./role');
+const UserCompany = require('./userCompany');
 const UserRole = require('./userRole');
+
 
 /**
  * Clase que representa el modelo de usuario.
@@ -58,6 +60,7 @@ User.init({
  * Un usuario puede tener muchos roles.
  */
 User.hasMany(UserRole);
+User.hasMany(UserCompany);
 
 /**
  * Exporta el modelo de usuario.

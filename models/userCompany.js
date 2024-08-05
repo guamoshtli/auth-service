@@ -1,12 +1,11 @@
-const { Model, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Company = require('./company') 
 
-class UserCompany extends Model {}
-
-UserCompany.init({
+const UserCompany = sequelize.define('UserCompany', {
   userId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: 'Users',
       key: 'id',
@@ -14,15 +13,14 @@ UserCompany.init({
   },
   companyId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: 'Companies',
       key: 'id',
     },
   },
 }, {
-  sequelize,
-  modelName: 'UserCompany',
-  timestamps: true,
+  timestamps: true
 });
 
 UserCompany.belongsTo(Company);

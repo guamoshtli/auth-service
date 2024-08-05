@@ -157,6 +157,198 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /roles:
+    get:
+      summary: Obtiene una lista de todos los Roles de usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+
+    post:
+      summary: Crea un nuevo rol
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '201':
+          description: Rol creado exitosamente
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /roles/{id}:
+    get:
+      summary: Obtiene un rol por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del rol
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rol encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Rol no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Actualiza un rol
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del Rol
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Rol actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Rol no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Elimina un Rol
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del Rol
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rol eliminado
+        '404':
+          description: Rol no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
+  
+  /userRoles:
+    get:
+      summary: Obtiene una lista de todos los Roles asignados a un usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Listado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRole'
+
+    post:
+      summary: Crea un nuevo rol-usuario
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+      responses:
+        '201':
+          description: Rol asignado exitosamente
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /userRoles/{userId}:
+    get:
+      summary: Obtiene un rol por ID de usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Roles encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleId'
+        '404':
+          description: Roles no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Elimina un  usuario de uno o más roles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del Rol
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rol eliminado
+        '404':
+          description: Rol no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'   
 
   /companies:
     get:
@@ -206,7 +398,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Compañia encontrado
+          description: Compañia encontrada
           content:
             application/json:
               schema:
@@ -219,7 +411,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     put:
-      summary: Actualiza un compañia
+      summary: Actualiza una compañia
       security:
         - bearerAuth: []
       parameters:
@@ -237,19 +429,19 @@ paths:
               $ref: '#/components/schemas/Company'
       responses:
         '200':
-          description: Comapñía actualizado
+          description: Comapñía actualizada
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
         '404':
-          description: Usuario no encontrado
+          description: Compañía no encontrada
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
-      summary: Elimina un compañía
+      summary: Elimina una compañía
       security:
         - bearerAuth: []
       parameters:
@@ -267,7 +459,86 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
+  /userCompanies:
+      get:
+        summary: Obtiene una lista de todas las Compañías de un usuario
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: Listado
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserCompany'
+      post:
+        summary: Asigna una compaía a un usuario
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCompany'
+        responses:
+          '201':
+            description: Rol asignado exitosamente
+          '400':
+            description: Error de validación
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'  
+
+  /userCompanies/{userId}:
+    get:
+      summary: Obtiene las compañías por ID de usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Compañías encontradas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleId'
+        '404':
+          description: Roles no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Elimina un usuario de una o más  compañías
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del Usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Compañía eliminada
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     
 components:
   schemas:
@@ -329,6 +600,33 @@ components:
           type: string
         address:
           type: string
+
+    Role:
+      type: object
+      properties:
+        name:
+          type: string 
+    RoleId:
+      type: object
+      properties:
+        name:
+          type: integer       
+    
+    UserRole:
+      type: object
+      properties:
+        userId:
+          type: number
+        roleId:
+          type: number
+
+    UserCompany:
+      type: object
+      properties:
+        userId:
+          type: integer
+        companyId:
+          type: integer      
 
   securitySchemes:
     bearerAuth:
