@@ -61,3 +61,21 @@ CREATE TABLE `UserRoles` (
   CONSTRAINT `UserRoles_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `UserRoles_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `Roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `OperacionesFinancieras` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `empresa_id` int NOT NULL,
+  `empresa` varchar(255) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `fecha` date NOT NULL,
+  `anio` int DEFAULT NULL,
+  `estatus` varchar(50) NOT NULL,
+  `genero` varchar(50) NOT NULL,
+  `producto` varchar(255) NOT NULL,
+  `estado` varchar(255) NOT NULL,
+  `municipio` varchar(255) NOT NULL,
+  `sucursal` varchar(255) NOT NULL,
+  `operaciones` int DEFAULT NULL,
+  `monto` decimal(15,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15652 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

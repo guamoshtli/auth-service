@@ -38,9 +38,9 @@ const roleRoutes = require('./routes/role');
 const companyRoutes = require('./routes/company');
 const userRoleRoutes = require('./routes/userRole');
 const userCompanyRoutes = require('./routes/userCompany');
+const operacionesRoutes = require('./routes/operacionesRoutes'); // Importa las rutas de operaciones
 
-const swaggerDocument = YAML.load('./services/openapi.yml');   
-
+const swaggerDocument = YAML.load('./services/openapi.yml'); 
 
 //Expone  un endpoint para  trabajar con las apis
 if (process.env.NODE_ENV == 'Desarrollo') {
@@ -72,6 +72,7 @@ app.use('/roles', roleRoutes);
 app.use('/companies', companyRoutes);
 app.use('/userRoles', userRoleRoutes);
 app.use('/userCompanies', userCompanyRoutes);
+app.use('/api', operacionesRoutes); // Monta las rutas de operaciones con el prefijo /api
 
 /**
  * Manejo de errores para rutas no encontradas.
