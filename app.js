@@ -39,7 +39,6 @@ const companyRoutes = require('./routes/company');
 const userRoleRoutes = require('./routes/userRole');
 const userCompanyRoutes = require('./routes/userCompany');
 const operacionesRoutes = require('./routes/operacionesRoutes'); // Importa las rutas de operaciones
-
 const swaggerDocument = YAML.load('./services/openapi.yml'); 
 
 //Expone  un endpoint para  trabajar con las apis

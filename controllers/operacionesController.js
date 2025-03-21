@@ -76,14 +76,14 @@ exports.getOperacionById = async (req, res) => {
   }
 };
 
-exports.getDashboardData = async (req, res) => {
+exports.getCapitalGenero = async (req, res) => {
   try {
     const { empresaId } = req.query; // Obtén el empresaId de los parámetros de consulta
     const query = `
-      SELECT ANIO, GENERO, SUM(operaciones) NUMOP, SUM(monto) MONTO
-      FROM OperacionesFinancieras
-      WHERE empresa_id = :empresaId AND tipo = 'CAPITAL'
-      GROUP BY ANIO, GENERO;
+            SELECT  GENERO, estatus, SUM(operaciones) NUMOP,  SUM(monto) MONTO  
+from OperacionesFinancieras of2  WHERE
+empresa_id =:empresaId and  tipo='CAPITAL'  AND anio=Year(CURRENT_DATE())
+GROUP BY   GENERO, estatus
     `;
 
     const results = await sequelize.query(query, {

@@ -20,6 +20,6 @@ router.get('/operaciones/filtrado', authorize(['USER', 'ADMIN']), operacionesCon
 router.get('/operaciones/:id', authorize(['USER', 'ADMIN']), operacionesController.getOperacionById);
 
 // Ruta para obtener datos del dashboard
-router.get('/dashboard', authorize(['USER', 'ADMIN']), operacionesController.getDashboardData);
+router.get('/capitalgenero', authorize(['USER', 'ADMIN']), operacionesController.getCapitalGenero);
 
 module.exports = router;

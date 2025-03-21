@@ -23,6 +23,11 @@ const UserCompany = sequelize.define('UserCompany', {
   timestamps: true
 });
 
-UserCompany.belongsTo(Company);
+//UserCompany.belongsTo(Company);
+// Asociación inversa
+Company.hasMany(UserCompany, { foreignKey: 'companyId' });
+UserCompany.belongsTo(Company, { foreignKey: 'companyId' });
+
+
 
 module.exports = UserCompany;

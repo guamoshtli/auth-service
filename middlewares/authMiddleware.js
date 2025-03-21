@@ -1,10 +1,10 @@
 /**
  * Archivo que contiene la función para verificar tokens de autenticación y autorizar el acceso.
  */
-
+// authMiddleware.js
 const jwt = require('jsonwebtoken');
 const { isTokenBlacklisted } = require('../controllers/authController');
-const { Role, UserRole, UserCompany, User } = require('../models'); // Importa tus modelos
+const { Role, UserRole, UserCompany, User, Company } = require('../models'); // Importa el modelo Company
 const s = require('./sendResponse');
 require('dotenv').config();
 
@@ -12,7 +12,7 @@ require('dotenv').config();
  * Función para verificar un token de autenticación y adjuntar la información del usuario a la solicitud.
  */
 exports.verifyToken = async (req, res, next) => {
-  console.log('Middleware verifyToken ejecutándose...'); // Agrega este log
+  //console.log('Middleware verifyToken ejecutándose...');
 
   const token = req.header('Authorization');
 
@@ -28,7 +28,7 @@ exports.verifyToken = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
-    req.user = decoded; // Adjuntamos la información decodificada del token (aquí debería estar el id del usuario)
+    req.user = decoded; // Adjuntamos la información decodificada del token
 
     // Buscar información adicional del usuario (roles y empresa)
     const user = await User.findByPk(req.user.id, {
@@ -39,23 +39,35 @@ exports.verifyToken = async (req, res, next) => {
         },
         {
           model: UserCompany,
-          attributes: ['companyId'],
+          include: [{ model: Company, attributes: ['name'] }],
         },
       ],
     });
+
+    console.log('Usuario encontrado:', user); // Log para depuración
 
     if (!user) {
       return s.sendResponse(res, 401, { error: 'Usuario no encontrado' });
     }
 
-    req.user.roles = user.UserRoles.map(ur => ur.Role.name.toUpperCase());
-    req.user.company_id = user.UserCompanies.length > 0 ? user.UserCompanies[0].companyId : null;
+    if (!user.UserRoles || user.UserRoles.length === 0) {
+      return s.sendResponse(res, 401, { error: 'El usuario no tiene roles asignados' });
+    }
 
-    console.log('Roles del usuario (verifyToken):', req.user.roles); // Agrega este log
+    if (!user.UserCompanies || user.UserCompanies.length === 0) {
+      return s.sendResponse(res, 401, { error: 'El usuario no tiene empresas asignadas' });
+    }
+
+    req.user.roles = user.UserRoles.map(ur => ur.Role.name.toUpperCase());
+    req.user.company_id = user.UserCompanies[0].companyId;
+    req.user.company_name = user.UserCompanies[0].Company.name;
+
+    //console.log('Roles del usuario (verifyToken):', req.user.roles);
+    //console.log('Empresa del usuario (verifyToken):', req.user.company_name);
 
     next();
   } catch (error) {
-    console.error('Error al verificar el token:', error);
+    //console.error('Error al verificar el token:', error);
     s.sendResponse(res, 400, { error: 'Token no válido' });
   }
 };
